@@ -1,0 +1,38 @@
+﻿@page
+@model ConfigChangeModel
+@{
+    ViewData["Title"] = "Change Logs";
+}
+
+<!-- Summarize change logs in Chart.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Render the chart -->
+<div class="container mt-4">
+	<h3>Change Logs</h3>
+	<canvas id="changeLogChart" width="400" height="200"></canvas>
+	<script>
+				var ctx = document.getElementById('changeLogChart').getContext('2d');
+				var changeLogChart = new Chart(ctx, {
+					type: 'bar',
+					data: {
+						labels: @Html.Raw(Json.Serialize(Model.ChangeLogAdminNames)),
+						datasets: [{
+							label: 'Change Logs',
+							data: @Html.Raw(Json.Serialize(Model.ChangeLogCounts)),
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							borderColor: 'rgba(75, 192, 192, 1)',
+							borderWidth: 1
+						}]
+					},
+					options: {
+						scales: {
+							y: {
+								beginAtZero: true
+							}
+						}
+					}
+				});
+	</script>
+</div>
