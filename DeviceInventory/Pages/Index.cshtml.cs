@@ -20,14 +20,12 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
 
 		foreach (var organization in organizations)
 		{
-			// Get inventory devices for each organization
-			var devices = await merakiClient
+			var inventoryDevices = await merakiClient
 				.Organizations
 				.InventoryDevices
 				.GetOrganizationInventoryDevicesAsync(organization.Id);
 
-			// Add devices to the list
-			InventoryDevices.AddRange(devices);
+			InventoryDevices.AddRange(inventoryDevices);
 		}
 	}
 }
