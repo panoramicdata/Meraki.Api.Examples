@@ -1,0 +1,79 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+<div class="container mt-4">
+	<h3>Inventory Devices</h3>
+
+	<div class="mb-3">
+		<input type="text" id="deviceFilter" class="form-control" placeholder="Filter devices..." onkeyup="filterTable()" />
+	</div>
+
+	<table class="table table-bordered table-hover" id="deviceTable">
+		<thead class="table-light">
+			<tr>
+				<th>MAC</th>
+				<th>Serial</th>
+				<th>Name</th>
+				<th>Model</th>
+				<th>Network ID</th>
+				<th>Order #</th>
+				<th>Claimed At</th>
+				<th>License Expiry</th>
+				<th>Product Type</th>
+				<th>Country</th>
+				<th>Usage</th>
+				<th>Tags</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var d in Model.InventoryDevices)
+			{
+				<tr>
+					<td>@d.Mac</td>
+					<td>@d.Serial</td>
+					<td>@d.Name</td>
+					<td>@d.Model</td>
+					<td>@d.NetworkId</td>
+					<td>@d.OrderNumber</td>
+					<td>@(d.ClaimedAt?.ToString("yyyy-MM-dd") ?? "")</td>
+					<td>@(d.LicenseExpirationDate?.ToString("yyyy-MM-dd") ?? "")</td>
+					<td>@d.ProductType?.ToString()</td>
+					<td>@d.CountryCode</td>
+					<td>@d.Usage</td>
+					<td>@(d.Tags != null ? string.Join(", ", d.Tags) : "")</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+<script>
+	function filterTable()
+	{
+		var input = document.getElementById("deviceFilter");
+		var filter = input.value.toLowerCase();
+		var table = document.getElementById("deviceTable");
+		var tr = table.getElementsByTagName("tr");
+
+		for (var i = 1; i < tr.length; i++)
+		{
+			var td = tr[i].getElementsByTagName("td");
+			var match = false;
+
+			for (var j = 0; j < 5; j++) // Filter first 5 columns only
+			{
+				if (td[j] && td[j].textContent.toLowerCase().indexOf(filter) > -1)
+				{
+					match = true;
+					break;
+				}
+			}
+			tr[i].style.display = match ? "" : "none";
+		}
+	}
+</script>
