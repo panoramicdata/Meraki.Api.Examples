@@ -1,5 +1,6 @@
 using Meraki.Api;
 using Meraki.Api.Data;
+using Meraki.Api.Extensions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeviceInventory.Pages;
@@ -23,7 +24,7 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
 			var inventoryDevices = await merakiClient
 				.Organizations
 				.InventoryDevices
-				.GetOrganizationInventoryDevicesAsync(organization.Id);
+				.GetOrganizationInventoryDevicesAllAsync(organization.Id);
 
 			InventoryDevices.AddRange(inventoryDevices);
 		}
