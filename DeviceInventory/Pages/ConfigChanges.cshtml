@@ -17,7 +17,7 @@
 				var changeLogChart = new Chart(ctx, {
 					type: 'bar',
 					data: {
-						labels: @Html.Raw(Json.Serialize(Model.ChangeLogAdminNames)),
+						labels: @Html.Raw(Json.Serialize(Model.ChangeLogNetworkNames)),
 						datasets: [{
 							label: 'Change Logs',
 							data: @Html.Raw(Json.Serialize(Model.ChangeLogCounts)),

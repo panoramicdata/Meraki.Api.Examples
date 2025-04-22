@@ -6,7 +6,7 @@ namespace DeviceInventory.Pages;
 
 public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 {
-	public List<string> ChangeLogAdminNames { get; set; } = [];
+	public List<string> ChangeLogNetworkNames { get; set; } = [];
 
 	public List<int> ChangeLogCounts { get; set; } = [];
 
@@ -16,6 +16,7 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 		{
 			ApiKey = Environment.GetEnvironmentVariable("MERAKI_API_KEY") ?? string.Empty,
 			UserAgent = "DeviceInventory/1.0",
+			MaxAttemptCount = 50
 		}, logger);
 
 		var organizations = await merakiClient.Organizations.GetOrganizationsAsync();
@@ -39,12 +40,13 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 		}
 
 		var changeLogAggregations = allChangeLogEntries
-			.GroupBy(x => x.AdminName)
-			.Select(g => new { AdminName = g.Key, Count = g.Count() })
+			.Where(e => !string.IsNullOrEmpty(e.NetworkName))
+			.GroupBy(x => x.NetworkName)
+			.Select(g => new { NetworkName = g.Key, Count = g.Count() })
 			.OrderByDescending(g => g.Count)
 			.ToList();
 
-		ChangeLogAdminNames = [.. changeLogAggregations.Select(g => g.AdminName)];
+		ChangeLogNetworkNames = [.. changeLogAggregations.Select(g => g.NetworkName)];
 		ChangeLogCounts = [.. changeLogAggregations.Select(g => g.Count)];
 	}
 }
