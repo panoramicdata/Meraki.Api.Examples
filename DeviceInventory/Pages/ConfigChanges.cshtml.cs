@@ -10,7 +10,7 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 
 	public List<int> ChangeLogCounts { get; set; } = [];
 
-	public async Task OnGetAsync()
+	public async Task OnGetAsync(CancellationToken cancellationToken)
 	{
 		var apiKey = Environment.GetEnvironmentVariable("MERAKI_API_KEY") ?? string.Empty;
 
@@ -23,7 +23,9 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 			MaxBackOffDelaySeconds = 60,
 		}, logger);
 
-		var organizations = await merakiClient.Organizations.GetOrganizationsAsync();
+		var organizations = await merakiClient
+			.Organizations
+			.GetOrganizationsAsync(cancellationToken: cancellationToken);
 
 		var allChangeLogEntries = new List<ChangeLogEntry>();
 
@@ -38,7 +40,8 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 				.GetOrganizationConfigurationChangesAsync(
 					organization.Id,
 					t0: t0.ToString(),
-					t1: t1.ToString());
+					t1: t1.ToString(),
+					cancellationToken: cancellationToken);
 
 			allChangeLogEntries.AddRange(changeLogEntries);
 		}
