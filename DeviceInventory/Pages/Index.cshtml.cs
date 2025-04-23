@@ -14,9 +14,9 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
 		using var merakiClient = new MerakiClient(new MerakiClientOptions
 		{
 			ApiKey = Environment.GetEnvironmentVariable("MERAKI_API_KEY") ?? string.Empty,
-			// https://developer.cisco.com/meraki/api-v1/user-agents-overview/#formatting
 			UserAgent = "DeviceInventory/1.0 ExampleCompany",
-			MaxAttemptCount = 50
+			MaxAttemptCount = 50,
+			ReadOnly = true,
 		}, logger);
 
 		var organizations = await merakiClient.Organizations.GetOrganizationsAsync();

@@ -12,11 +12,15 @@ public class ConfigChangeModel(ILogger<ConfigChangeModel> logger) : PageModel
 
 	public async Task OnGetAsync()
 	{
+		var apiKey = Environment.GetEnvironmentVariable("MERAKI_API_KEY") ?? string.Empty;
+
 		using var merakiClient = new MerakiClient(new MerakiClientOptions
 		{
-			ApiKey = Environment.GetEnvironmentVariable("MERAKI_API_KEY") ?? string.Empty,
-			UserAgent = "DeviceInventory/1.0",
-			MaxAttemptCount = 50
+			ApiKey = apiKey,
+			UserAgent = "DeviceInventory/1.0 ExampleCompany",
+			MaxAttemptCount = 50,
+			ReadOnly = true,
+			MaxBackOffDelaySeconds = 60,
 		}, logger);
 
 		var organizations = await merakiClient.Organizations.GetOrganizationsAsync();
